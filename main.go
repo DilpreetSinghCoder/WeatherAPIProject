@@ -21,6 +21,33 @@ func main() {
 	http.ListenAndServe(Dport, nil)
 }
 
+func handleCityRequest(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		getWeather(w, r)
+	case "POST":
+		postWeather(w, r)
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func getWeather(w http.ResponseWriter, r *http.Request) {
+	cityName := r.URL.Query().Get("name")
+	if cityName == "" {
+		http.Error(w, "City name parameter is missing", http.StatusBadRequest)
+		return
+	}
+
+	weather, err := weatherAPI(cityName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(weather)
+}
+
 func postWeather(w http.ResponseWriter, r *http.Request) {
 	var requestData struct {
 		Name string `json:"name"`
