@@ -82,3 +82,5 @@ func TestPostWeather(t *testing.T) {
 		t.Errorf("Unexpected city name in response: got %s want %s", weatherResponse.City, expectedCity)
 	}
 }
+
+var test = "testing"
